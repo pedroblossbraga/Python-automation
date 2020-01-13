@@ -1,3 +1,10 @@
+"""
+==================================
+Statistical report over a csv file
+==================================
+"""
+
+
 import pandas as pd
 import numpy as np
 from scipy import stats
@@ -5,12 +12,12 @@ from pandas import DataFrame
 from datetime import datetime
 import os
 
-end = str(input('Insira o caminho completo com o nome do arquivo para analisar: '+'\n'))
+end = str(input('Add the complete path and file name to be analyzed: '+'\n'))
 
 def relatorio_txt(end):	
 
 	def porcent_unique(col_name):
-		return str('Porcentagem de unique: '+ str(100*len(df[col_name].unique())/len(df[col_name]))+' %')
+		return str('% de unique: '+ str(100*len(df[col_name].unique())/len(df[col_name]))+' %')
 
 	def gera_data_atual():
 			# datetime object containing current date and time
@@ -109,8 +116,8 @@ def relatorio_txt(end):
 								datas = df.columns[k]
 								return datas
 								
-				print(' ', '\n', 'A coluna de datas é a ', '\n', ' ', datas, '\n', ' ', '\n')	
-			except: print('Não ha coluna com datas do tipo aaaammmddd ou ddmmaaaa. ')
+				print(' ', '\n', 'The date column is ', '\n', ' ', datas, '\n', ' ', '\n')	
+			except: print('There is no date column in the format aaaammmddd ou ddmmaaaa. ')
 
 		return datas
 	datas = acha_datas(df)
@@ -120,50 +127,45 @@ def relatorio_txt(end):
 
 	def main():
 		data_str = gera_data_atual()
-		enddir = str(input('Insira o caminho do relatorio: '+'\n'))
+		enddir = str(input('Insert the report directory: '+'\n'))
 
-		nome = enddir+'Relatorio'+data_str+".txt"
+		nome = enddir+'Report'+data_str+".txt"
 		f = open(nome, "a+")
 
-		f.write((str("Relatório da base Oriana_ 13112019_1635_Hirota_amostra_bebidas_loja3.csv"+"\n"+ " "+ "\n"+ " " + "\n").center(80)))
+		f.write((str("Report"+"\n"+ " "+ "\n"+ " " + "\n").center(80)))
 
-		f.write("Informações gerais do Arquivo de entrada:"+"\n"+2*len("Informações gerais do Arquivo de entrada:")*"_"+"\n"+" "+"\n")
-		f.write("O Arquivo de entrada contém "+ str(df.shape[0])+" linhas, e "+ str(df.shape[1])+" colunas."+ " \n"+ " " + "\n")
+		f.write("Infos:"+"\n"+2*len("Informações gerais do Arquivo de entrada:")*"_"+"\n"+" "+"\n")
+		f.write("The file contains"+ str(df.shape[0])+" lines, and "+ str(df.shape[1])+" columns."+ " \n"+ " " + "\n")
 
-		f.write(("Suas colunas sao: " + "\n" + " " + "\n").center(80))
+		f.write(("The columns are: " + "\n" + " " + "\n").center(80))
 		f.write((str(df.columns)+ "\n" + " " + "\n").center(80))
 
 		f.write(str(df.info())+'\n'+' '+'\n')
 
 		f.write(" "+"\n"+ 180*"-" + "\n" + " "+ "\n")
 
-		f.write('Contagem de NaNs: '+str(df.isna().sum())+ '\n'+' '+'\n')
+		f.write('# NaNs (count): '+str(df.isna().sum())+ '\n'+' '+'\n')
 
-		f.write(('Informações dos valores: '+'\n'+2*len('Informações dos valores: ')*'_'+'\n'+' '+'\n').center(80))
+		f.write(('Value informations: '+'\n'+2*len('Value informations: ')*'_'+'\n'+' '+'\n').center(80))
 		for k in range(len(df.columns)):
-			f.write(('COLUNA: ' + df.columns[k].upper() + '\n'+' '+ '\n').center(80))
+			f.write(('COLUMN: ' + df.columns[k].upper() + '\n'+' '+ '\n').center(80))
 
 			if type(df[df.columns[k]][0]) != str or type(df[df.columns[k]][1]) != str:
-				f.write(('Media: '+str(df[df.columns[k]].dropna(how='any').mean()) +'\n'+' '+'\n').center(80))
+				f.write(('Mean: '+str(df[df.columns[k]].dropna(how='any').mean()) +'\n'+' '+'\n').center(80))
 				f.write(('Max: '+str(df[df.columns[k]].dropna(how='any').max()) +'\n'+' '+'\n').center(80))
 				f.write(('Min: '+str(df[df.columns[k]].dropna(how='any').min()) +'\n'+' '+'\n').center(80))
-				f.write(('Desvio Padrão: '+str(df[df.columns[k]].std()) +'\n'+' '+'\n').center(80))
+				f.write(('Std: '+str(df[df.columns[k]].std()) +'\n'+' '+'\n').center(80))
 
-			f.write('total: '+str(len(df[df.columns[k]]))+' , com '+str(len(df[df.columns[k]].unique()))+' valor(es) único(s). '+'\n'+' '+'\n')
+			f.write('total: '+str(len(df[df.columns[k]]))+' , with '+str(len(df[df.columns[k]].unique()))+' unique values. '+'\n'+' '+'\n')
 
-			#f.write(('Unicos: :'+'\n')
-			#for j in range(len(df[df.columns[k]].unique())):
-				#f.write(str(df[df.columns[k]].unique()[j]) +'\n')
-			#f.write(' '+'\n')
-			#f.write(('Unicos: '+str(df[df.columns[k]].unique()) +'\n'+' '+'\n').center(80))
-			f.write(('Qtd Unicos: '+str(len(df[df.columns[k]].unique())) +'\n'+' '+'\n').center(80))
-			f.write(('Porcentagem de Unicos: '+str(porcent_unique(df.columns[k])) +'\n'+' '+'\n').center(80))
-			f.write(('Mais frequente (Moda): '+str(df[df.columns[k]].mode().values)).center(80))
+			f.write(('Qtd Unique values: '+str(len(df[df.columns[k]].unique())) +'\n'+' '+'\n').center(80))
+			f.write(('% Unique: '+str(porcent_unique(df.columns[k])) +'\n'+' '+'\n').center(80))
+			f.write(('Most frequent (Mode): '+str(df[df.columns[k]].mode().values)).center(80))
 
 			f.write(' ' + '\n' + 180*'_' + '\n'+ ' ' + '\n'+ ' ')
 
 		if len(datas)>0:
-			f.write(('Informações relativas às datas: '+'\n'+2*len('Informações relativas às datas: ')*'_'+'\n'+' '+'\n').center(80))
+			f.write(('Date infos: '+'\n'+2*len('Date infos: ')*'_'+'\n'+' '+'\n').center(80))
 			
 			for k in range(len(df_data.columns)):
 				f.write((str(df_data.columns[k])+'\n').center(80))
@@ -171,22 +173,12 @@ def relatorio_txt(end):
 				f.write(' '+'\n')
 		else:
 			f.write(' ' + '\n')
-			f.write('Aparentemente, não encontrou a coluna de datas.'.center(100))
+			f.write('Aparently, we did not found the date column.'.center(100))
 			f.write( '\n'+ ' ')
-
-		'''
-		for j in range(len(df_data.columns)):
-			f.write(str(df_data.columns[j]).center(80)+'\n'+' '+'\n')
-			f.write(' '+'\n'+' '+'\n')
-			for i in range(len(df_data)):
-				data=[]
-				data.append((str(df_data.index[i])+' : '+(str(df_data[df_data.columns[j]][i]))).center(80))
-				f.write((str(data))+'\n'+' '+'\n')
-			f.write(' ' + '\n' + 180*'_' + '\n'+ ' ' + '\n'+ ' ')
-		'''
 
 		f.close()
 	if __name__ =="__main__":
+		print(__doc__)
 		main()
 
 relatorio_txt(end) 
